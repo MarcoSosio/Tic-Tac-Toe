@@ -1,0 +1,68 @@
+body {
+  height: 100vh;
+  margin: 0;
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+body h1 {
+  font-size: 3rem;
+}
+body table {
+  border-collapse: collapse;
+  border: 2px solid transparent;
+}
+body table td {
+  position: relative;
+  width: calc(5vw + 4.5rem);
+  height: calc(5vw + 4.5rem);
+  border: 1px solid white;
+}
+body table td .circle, body table td .cross {
+  width: calc(3.5vw + 3.15rem);
+  height: calc(3.5vw + 3.15rem);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+body table td .circle {
+  /* border: 5px solid royalblue; */
+  border-radius: 50%;
+}
+body table td .cross .line1, body table td .cross .line2 {
+  /*background-color: red;*/
+  width: calc(4.9497474683vw + 4.4547727215rem);
+  height: 5px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 3px;
+}
+body table td .cross .line1 {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+body table td .cross .line2 {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+body dialog[open] {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  font-size: calc(1.5vw + 1.35rem);
+  font-weight: 600;
+  font-family: sans-serif;
+  border-radius: 10px;
+  width: calc(25vw + 22.5rem);
+  height: calc(5vw + 4.5rem);
+  transform: translate(0, 100px);
+}
+body dialog[open] button {
+  font-size: calc(0.75vw + 0.675rem);
+}
+
+/*# sourceMappingURL=style.css.map */
