@@ -1,0 +1,81 @@
+@use "sass:math";
+
+$sqrt2: math.sqrt(2);
+@mixin center-pos-absolute(){
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+@function dimensioni($scala){
+    $vw:5vw;
+    $fisso:4.5rem;
+    @return calc($vw * $scala + $fisso * $scala);
+}
+body{
+    height: 100vh;
+    margin: 0;
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    h1{
+        font-size: 3rem;
+    }
+    table{
+        border-collapse: collapse;
+        border: 2px solid transparent;
+        td{
+            position: relative;
+            $scala-dimensioni-cella:1;
+            width: dimensioni($scala-dimensioni-cella);
+            height: dimensioni($scala-dimensioni-cella);
+            border: 1px solid white;
+
+            $scala-dimensioni-contenuto: 0.7;
+            .circle,.cross{
+                width: dimensioni($scala-dimensioni-contenuto);
+                height: dimensioni($scala-dimensioni-contenuto);
+                @include center-pos-absolute();
+                transform: translate(-50%,-50%);
+            }
+            .circle{
+                /* border: 5px solid royalblue; */
+                border-radius: 50%; 
+            }
+
+            .cross{
+                .line1, .line2{
+                    /*background-color: red;*/
+                    width: dimensioni($scala-dimensioni-contenuto * $sqrt2);
+                    height: 5px;
+                    @include center-pos-absolute();
+                    border-radius: 3px;
+                }
+                .line1{
+                    transform: translate(-50%,-50%) rotate(-45deg);
+                }
+                .line2{
+                    transform: translate(-50%,-50%) rotate(45deg);
+                }
+            }
+        }
+    }
+    dialog[open]{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+        font-size: dimensioni(0.3);
+        font-weight: 600;
+        font-family: sans-serif;
+        border-radius: 10px;
+        width: dimensioni(5);
+        height: dimensioni(1);
+        transform: translate(0,100px);
+        button{
+            font-size: dimensioni(0.15);
+        }
+    }
+}
