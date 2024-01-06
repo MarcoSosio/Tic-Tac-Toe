@@ -42,10 +42,14 @@ body{
             }
             .circle{
                 /* border: 5px solid royalblue; */
-                border-radius: 50%; 
+                border-radius: 50%;
+            }
+            .circle-active{
+                    border: 5px solid royalblue;
             }
 
             .cross{
+
                 .line1, .line2{
                     /*background-color: red;*/
                     width: dimensioni($scala-dimensioni-contenuto * $sqrt2);
@@ -58,6 +62,12 @@ body{
                 }
                 .line2{
                     transform: translate(-50%,-50%) rotate(45deg);
+                }
+
+            }
+            .cross-active{
+                >*{
+                    background-color: red;
                 }
             }
         }
@@ -77,5 +87,17 @@ body{
         button{
             font-size: dimensioni(0.15);
         }
+    }
+    .red-win{
+        color: red;
+        box-shadow: 0 0 10px 4px red;
+    }
+    .blue-win{
+        color: royalblue;
+        box-shadow: 0 0 10px 4px royalblue;
+    }
+    .pareggio{
+        color: black;
+        box-shadow: 0 0 10px 4px white;
     }
 }

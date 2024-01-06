@@ -33,6 +33,9 @@ body table td .circle {
   /* border: 5px solid royalblue; */
   border-radius: 50%;
 }
+body table td .circle-active {
+  border: 5px solid royalblue;
+}
 body table td .cross .line1, body table td .cross .line2 {
   /*background-color: red;*/
   width: calc(4.9497474683vw + 4.4547727215rem);
@@ -47,6 +50,9 @@ body table td .cross .line1 {
 }
 body table td .cross .line2 {
   transform: translate(-50%, -50%) rotate(45deg);
+}
+body table td .cross-active > * {
+  background-color: red;
 }
 body dialog[open] {
   display: flex;
@@ -63,6 +69,18 @@ body dialog[open] {
 }
 body dialog[open] button {
   font-size: calc(0.75vw + 0.675rem);
+}
+body .red-win {
+  color: red;
+  box-shadow: 0 0 10px 4px red;
+}
+body .blue-win {
+  color: royalblue;
+  box-shadow: 0 0 10px 4px royalblue;
+}
+body .pareggio {
+  color: black;
+  box-shadow: 0 0 10px 4px white;
 }
 
 /*# sourceMappingURL=style.css.map */
