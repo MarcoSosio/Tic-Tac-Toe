@@ -1,9 +1,5 @@
-const caselle=document.getElementsByTagName("td");
-const dialog=document.getElementsByTagName("dialog")[0];
-// const bottone_dialog = document.getElementById("bottone_dialog");
-let turni=0;
-let vinto=false;
-/*Caselle è una HTMLCollection che contiene le caselle, ogni casella ha un indice
+/*
+Caselle è una HTMLCollection che contiene le caselle, ogni casella ha un indice
 da 0 a 8, quando si clicca su una casella le verrà assegnata una proprietà data-mossa
 che potrà essere cerchio o croce
 
@@ -14,29 +10,46 @@ le caselle sono disposte così considernndo gli indici delle caselle
 6 7 8
 */
 
-function controlla_orizzontale(scelta){
-    if(! vinto){
-        for (let i = 0; i <= 6; i += 3) {//scorri righe
-            vinto = true; //presuppongo la vittoria, controllo se NON è così
-            for (let j = 0; j <= 2; j++) {//controlla tutti gli elementi della riga
-                if (caselle[i + j].dataset.mossa != scelta) {
-                    vinto = false;
-                    break; //mi basta anche solo che ci sia una mossa sbagliata
-                }
-            }
-            if (vinto) { //se anche solo una riga è vincente ho vinto quindi termino
-                break;
-            }
-        }
-    } 
-}
+//TODO Alcune cose da sistemare; funzioni inizianti con _ sono di nuova implementazione
+const caselle=document.getElementsByTagName("td");
+const dialog=document.getElementsByTagName("dialog")[0];
 
-function controlla_verticale(scelta){ //analogamente a sopra ma controllo le colonne
-    if(!vinto){
-        for (let i = 0; i <= 2; i += 1) {//scorri colonne
+let turni=0;
+let vinto=false;
+const combinazioni_vincenti=[
+    [0,1,2],[3,4,5],[6,7,8],    //orizzontali
+    [0,3,6],[1,4,7],[2,5,8],    //verticali
+    [0,4,8],[2,4,6]             //diagonali
+];
+
+function handler_mossa(){
+
+    const singola_casella=this;
+    let scelta;
+    
+    function esegui_mossa(){
+        turni++;
+
+        let elemento; //cerchio o croce
+        if (turni % 2 == 0) {
+            elemento = singola_casella.children[0]; //cerchio
+            elemento.classList.add("circle-active");
+            scelta = "cerchio";
+        }
+        else {
+            elemento = singola_casella.children[1]; //croce
+            elemento.classList.add("cross-active");
+            scelta = "croce";
+        }
+        singola_casella.dataset.mossa = scelta;
+        // controlla(scelta);
+    }
+
+    function verifica_vittoria() {
+        for (const combinazione of combinazioni_vincenti) {
             vinto = true;
-            for (let j = 0; j <= 6; j += 3) {//controlla colonna
-                if (caselle[i + j].dataset.mossa != scelta) {
+            for (const num of combinazione) {
+                if (caselle[num].dataset.mossa != scelta) {
                     vinto = false;
                     break;
                 }
@@ -45,106 +58,72 @@ function controlla_verticale(scelta){ //analogamente a sopra ma controllo le col
                 break;
             }
         }
-    } 
-}
+    }
 
-function controlla_diagonale(scelta){
-    /* 
-    0 1 2
-    3 4 5
-    6 7 8
-    */
-    /*Per far si che si possa fare tris in diagonale devo partire a controllare 
-    le due caselle agli angoli in alto*/
-    if(!vinto){
-        vinto = true;
-        for (let j = 0; j <= 8; j += 4) {
-            if (caselle[j].dataset.mossa != scelta) {
-                vinto = false;
-                break;
-            }
-        }
-        if (!vinto) {
-            vinto = true;
-            for (let j = 2; j <= 6; j += 2) {
-                if (caselle[j].dataset.mossa != scelta) {
-                    vinto = false;
-                    break;
+    function fine_gioco() {
+        const testo_dialog = document.getElementById("testo_dialog");
+
+        function pulisci_tabella() {
+            for (const singola_casella of caselle) {
+
+                for (const elemento of singola_casella.children) {
+                    if (elemento.classList.contains("circle-active")) {
+                        elemento.classList.remove("circle-active");
+                    }
+                    else if (elemento.classList.contains("cross-active")) {
+                        elemento.classList.remove("cross-active");
+                    }
                 }
             }
         }
-    }  
-}
 
-function vittoria(scelta){
-    const teso_finestra = document.getElementById("testo_finestra");
-    if(vinto || turni==9){
-        if (vinto) {
+        function reset_variabili() {
+            turni = 0;
+            vinto = false;
+            for (const singola_casella of caselle) {
+                singola_casella.dataset.mossa = "";
+            }
+        }
+
+        function vittoria() {
+
             if (scelta == "cerchio") {
-                teso_finestra.innerHTML = "Ha vinto il giocatore blu";
-                dialog.style.color = "royalblue";
-                dialog.style.boxShadow = "0 0 10px 4px royalblue";
+                testo_dialog.innerHTML = "Ha vinto il giocatore blu";
+                dialog.classList.add("blue-win");
             }
-            else {
-                teso_finestra.innerHTML = "Ha vinto il giocatore rosso";
-                dialog.style.color = "red";
-                dialog.style.boxShadow = "0 0 10px 4px red";
+            else if (scelta == "croce") {
+                testo_dialog.innerHTML = "Ha vinto il giocatore rosso";
+                dialog.classList.add("red-win");
             }
-            dialog.showModal();
+        }
+
+        function pareggio() {
+            testo_dialog.innerHTML = "Pareggio";
+            dialog.classList.add("pareggio");
+        }
+
+        if (vinto) {
+            vittoria();
         }
         else if (turni == 9) {
-            teso_finestra.innerHTML = "Pareggio";
-            dialog.style.color = "black";
-            dialog.style.boxShadow = "0 0 10px 4px white";
-            dialog.showModal();
+            pareggio();
         }
-        for(const singola_casella of caselle){
-            if(singola_casella.dataset.mossa=="cerchio"){
-                singola_casella.children[0].style.border="transparent";
-            }
-            else if(singola_casella.dataset.mossa=="croce"){
-                for(const linea of singola_casella.children[1].children){
-                    linea.style.backgroundColor="transparent";
-                }
-            }
-        }
-        for(const singola_casella of caselle){
-            singola_casella.dataset.mossa = "";
-        }
-        vinto=false;
-        turni=0;
+
+        pulisci_tabella();
+        reset_variabili();
+        dialog.showModal();
     }
-    
-}
 
-function controlla(scelta){
-    controlla_orizzontale(scelta);
-    controlla_verticale(scelta);
-    controlla_diagonale(scelta);
-    vittoria(scelta);
-}
 
-function handler_mossa(){
-    console.log(! this.dataset.mossa);
-    console.log(typeof this.dataset.mossa);
-    if( ! this.dataset.mossa){
-        turni++;
-        if (turni % 2 == 0) {
-            this.dataset.mossa="cerchio";
-            const cerchio = this.children[0];
-            cerchio.style.border = "5px solid royalblue";
-            controlla("cerchio");
-        }
-        else {
-            this.dataset.mossa = "croce";
-            const croce = this.children[1];
-            for (const linea of croce.children) {
-                linea.style.backgroundColor = "red";
-            }
-            controlla("croce");
+    if (!singola_casella.dataset.mossa){
+        esegui_mossa();
+        verifica_vittoria();
+        if (vinto || turni == 9) {
+            fine_gioco();
         }
     }
 }
+
 
 for(const singola_casella of caselle){
     singola_casella.addEventListener("click",handler_mossa);
