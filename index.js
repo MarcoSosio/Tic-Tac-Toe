@@ -102,6 +102,11 @@ function handler_mossa(){
             dialog.classList.add("pareggio");
         }
 
+        function togli_classi() {
+            dialog.classList.remove("red-win","blue-win","pareggio");
+        }
+
+        togli_classi();
         if (vinto) {
             vittoria();
         }
