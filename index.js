@@ -12,10 +12,15 @@ le caselle sono disposte così considernndo gli indici delle caselle
 
 //TODO Alcune cose da sistemare; funzioni inizianti con _ sono di nuova implementazione
 const caselle=document.getElementsByTagName("td");
-const dialog=document.getElementsByTagName("dialog")[0];
 
 let turni=0;
 let vinto=false;
+
+/*definisce se posso giocare la partita successiva
+impostato su false appena eseguo fine_partita() e reimpostato su true quando
+eseguo il reset delle variabile nell'handler del bottone reset()*/
+let gioca=true;
+
 const combinazioni_vincenti=[
     [0,1,2],[3,4,5],[6,7,8],    //orizzontali
     [0,3,6],[1,4,7],[2,5,8],    //verticali
@@ -42,9 +47,10 @@ function handler_mossa(){
             scelta = "croce";
         }
         singola_casella.dataset.mossa = scelta;
-        // controlla(scelta);
     }
 
+
+    let numeri_vincenti=[];
     function verifica_vittoria() {
         for (const combinazione of combinazioni_vincenti) {
             vinto = true;
@@ -55,74 +61,116 @@ function handler_mossa(){
                 }
             }
             if (vinto) {
+                numeri_vincenti=combinazione;
                 break;
             }
         }
     }
 
+
     function fine_gioco() {
-        const testo_dialog = document.getElementById("testo_dialog");
-
-        function pulisci_tabella() {
-            for (const singola_casella of caselle) {
-
-                for (const elemento of singola_casella.children) {
-                    if (elemento.classList.contains("circle-active")) {
-                        elemento.classList.remove("circle-active");
-                    }
-                    else if (elemento.classList.contains("cross-active")) {
-                        elemento.classList.remove("cross-active");
-                    }
-                }
-            }
-        }
-
-        function reset_variabili() {
-            turni = 0;
-            vinto = false;
-            for (const singola_casella of caselle) {
-                singola_casella.dataset.mossa = "";
-            }
-        }
+        const result = document.getElementById("result");
+        const text_result = document.getElementById("text_result");
+        //blocco il gioco fino a che il bottone per rigiocare non viene premuto
+        gioca=false; 
 
         function vittoria() {
 
-            if (scelta == "cerchio") {
-                testo_dialog.innerHTML = "Ha vinto il giocatore blu";
-                dialog.classList.add("blue-win");
+            function stile_bottone(){
+                result.style.visibility="visible";
+                if (scelta == "cerchio") {
+                    text_result.innerHTML = "Ha vinto il giocatore blu";
+                    result.classList.add("blue-win");
+                }
+                else if (scelta == "croce") {
+                    text_result.innerHTML = "Ha vinto il giocatore rosso";
+                    result.classList.add("red-win");
+                }
             }
-            else if (scelta == "croce") {
-                testo_dialog.innerHTML = "Ha vinto il giocatore rosso";
-                dialog.classList.add("red-win");
+
+            function stile_elementi_vincenti(){
+                for (const indice of numeri_vincenti) {
+                    if (caselle[indice].dataset.mossa == "cerchio") {
+                        const elemento = caselle[indice].children[0];
+                        elemento.classList.add("circle-win");
+                    }
+                    else if (caselle[indice].dataset.mossa == "croce") {
+                        const elemento = caselle[indice].children[1];
+                        elemento.classList.add("cross-win");
+                    }
+                }
             }
+
+            stile_bottone();
+            stile_elementi_vincenti();
         }
+
 
         function pareggio() {
-            testo_dialog.innerHTML = "Pareggio";
-            dialog.classList.add("pareggio");
+            result.style.visibility = "visible";
+            text_result.innerHTML = "Pareggio";
+            result.classList.add("pareggio");
         }
 
-        function togli_classi() {
-            dialog.classList.remove("red-win","blue-win","pareggio");
+
+        function reset(){
+
+            function pulisci_tabella() {
+                for (const singola_casella of caselle) {
+
+                    for (const elemento of singola_casella.children) {
+                        if (elemento.classList.contains("circle-active")) {
+                            elemento.classList.remove("circle-active");
+                        }
+                        else if (elemento.classList.contains("cross-active")) {
+                            elemento.classList.remove("cross-active");
+                        }
+                    }
+                }
+            }
+
+            function reset_variabili() {
+                turni = 0;
+                vinto = false;
+                //rimettto su true perché a seguito di aver premuto questo bottone posso 
+                //iniziare una nuova partita
+                gioca = true;
+                for (const singola_casella of caselle) {
+                    singola_casella.dataset.mossa = "";
+                }
+            }
+
+            function togli_classi() {
+                result.style.visibility = "hidden";
+
+                result.classList.remove("red-win", "blue-win", "pareggio");
+                for (const singola_casella of caselle) {
+                    for (const elemento of singola_casella.children) {
+                        elemento.classList.remove("circle-win", "cross-win");
+                    }
+                }
+            }
+
+            togli_classi();
+            pulisci_tabella();
+            reset_variabili();
         }
 
-        togli_classi();
         if (vinto) {
             vittoria();
         }
         else if (turni == 9) {
             pareggio();
         }
-
-        pulisci_tabella();
-        reset_variabili();
-        dialog.showModal();
+        result.addEventListener("click",reset);
     }
 
 
     if (!singola_casella.dataset.mossa){
-        esegui_mossa();
-        verifica_vittoria();
+        if(gioca){
+            esegui_mossa();
+            verifica_vittoria();
+        }
         if (vinto || turni == 9) {
             fine_gioco();
         }

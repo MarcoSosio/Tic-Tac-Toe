@@ -5,10 +5,12 @@ body {
   color: white;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: center;
 }
 body h1 {
+  margin-bottom: 0;
+  margin-top: 0;
   font-size: 3rem;
 }
 body table {
@@ -36,7 +38,20 @@ body table td .circle {
 body table td .circle-active {
   border: 5px solid royalblue;
 }
-body table td .cross .line1, body table td .cross .line2 {
+body table td .circle-win {
+  border: 15px solid royalblue;
+  animation-name: animation;
+  animation-duration: 4s;
+}
+@keyframes animation {
+  from {
+    transform: translate(-50%, -50%) rotateX(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotateX(360deg);
+  }
+}
+body table td .cross * {
   /*background-color: red;*/
   width: calc(4.9497474683vw + 4.4547727215rem);
   height: 5px;
@@ -51,36 +66,59 @@ body table td .cross .line1 {
 body table td .cross .line2 {
   transform: translate(-50%, -50%) rotate(45deg);
 }
-body table td .cross-active > * {
+body table td .cross-active * {
   background-color: red;
 }
-body dialog[open] {
+body table td .cross-win * {
+  height: 15px;
+  transition: 0.5s height linear;
+}
+body #result {
+  visibility: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
-  font-size: calc(1.5vw + 1.35rem);
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 10px;
-  width: calc(25vw + 22.5rem);
-  height: calc(5vw + 4.5rem);
-  transform: translate(0, 100px);
+  width: calc(15vw + 13.5rem);
+  height: 10vh;
+  background-color: rgb(30, 30, 30);
+  border: none;
 }
-body dialog[open] button {
-  font-size: calc(0.75vw + 0.675rem);
+body #result #text_result {
+  font-size: calc(0.9vw + 0.81rem);
+  font-family: sans-serif;
+  font-weight: 600;
+}
+body #result span {
+  font-size: calc(0.6vw + 0.54rem);
+  color: rgb(201, 201, 201);
 }
 body .red-win {
-  color: red;
   box-shadow: 0 0 10px 4px red;
 }
+body .red-win #text_result {
+  color: red;
+}
+body .red-win span {
+  display: initial !important;
+}
 body .blue-win {
-  color: royalblue;
   box-shadow: 0 0 10px 4px royalblue;
 }
+body .blue-win #text_result {
+  color: royalblue;
+}
+body .blue-win span {
+  display: initial;
+}
 body .pareggio {
-  color: black;
-  box-shadow: 0 0 10px 4px white;
+  box-shadow: 0 0 10px 4px bisque;
+}
+body .pareggio #text_result {
+  color: bisque;
+}
+body .pareggio span {
+  display: initial;
 }
 
 /*# sourceMappingURL=style.css.map */
